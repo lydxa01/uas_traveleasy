@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "391728079694",
+    "project_id": "uasflutter-57428",
+    "storage_bucket": "uasflutter-57428.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:391728079694:android:480d1e4c6382cb8f26f41f",
+        "android_client_info": {
+          "package_name": "com.example.final_uts_v3422026"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBq0yrurh6c1SEAnB3_-wLAW3V6Vc79th0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:391728079694:android:2424d5e84676451326f41f",
+        "android_client_info": {
+          "package_name": "com.example.uas_traveleasy"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBq0yrurh6c1SEAnB3_-wLAW3V6Vc79th0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
