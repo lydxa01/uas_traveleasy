@@ -18,7 +18,6 @@ class _ProfilState extends State<Profil> {
 
   @override
   Widget build(BuildContext context) {
-    // Get the current user from FirebaseAuth
     User? user = _auth.currentUser;
 
     return Scaffold(
@@ -52,8 +51,9 @@ class _ProfilState extends State<Profil> {
               ),
             ),
             SizedBox(height: 10),
+            // Use the user's display name (nama) if available, otherwise use a default value
             Text(
-              'Name: Ghani Albaba',
+              'Name: ${user?.displayName ?? "No Name"}',
               style: TextStyle(
                 fontSize: 18,
               ),

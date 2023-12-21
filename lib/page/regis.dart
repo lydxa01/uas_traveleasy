@@ -1,6 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:uas_traveleasy/page/login.dart';
-import 'package:firebase_auth/firebase_auth.dart'; 
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Regis extends StatefulWidget {
   const Regis({Key? key}) : super(key: key);
@@ -10,7 +11,6 @@ class Regis extends StatefulWidget {
 }
 
 class _RegisState extends State<Regis> {
-  bool isHidden = true;
   final _auth = FirebaseAuth.instance;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -19,64 +19,35 @@ class _RegisState extends State<Regis> {
 
   String _email = "";
   String _password = "";
+  String _fullName = "";
   void _handleSignUp() async {
     try {
-      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+      UserCredential userCredential =
+          await _auth.createUserWithEmailAndPassword(
         email: _email,
         password: _password,
       );
+
+      // Store additional user information in the database
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userCredential.user!.uid)
+          .set({
+        'fullName': _fullName, // Add this line to store the full name
+        'email': _email,
+        // Add more fields as needed
+      });
+
+      // Send email verification
+      await userCredential.user!.sendEmailVerification();
+
       print("User Created: ${userCredential.user!.email}");
     } catch (e) {
-      print("error during register: $e");
+      print("Error during register: $e");
     }
   }
 
-  // void navigateToLogin() {
-  //   Navigator.of(context).pushReplacement(MaterialPageRoute(
-  //     builder: (context) => Login(), 
-  //   ));
-  // }
-  // final _formSignupKey = GlobalKey<FormState>();
   bool agreePersonalData = true;
-
-
-
-//   void _register() async {
-//   try {
-//     if (_formSignupKey.currentState!.validate() && agreePersonalData) {
-//       final userCredential = await _auth.createUserWithEmailAndPassword(
-//         email: _emailController.text,
-//         password: _passwordController.text,
-//       );
-
-//       if (userCredential.user != null) {
-//         // The user successfully registered
-//         // Send email verification
-//         await userCredential.user!.sendEmailVerification();
-
-//         // Navigate to the login page
-//         navigateToLogin();
-//       } else {
-//         // The user failed to register
-//         // Show an error message
-//         ScaffoldMessenger.of(context).showSnackBar(
-//           const SnackBar(
-//             content: Text('Failed to register. Please try again.'),
-//           ),
-//         );
-//       }
-//     }
-//   } catch (e) {
-//     // An error occurred while trying to register
-//     // Show an error message
-//     ScaffoldMessenger.of(context).showSnackBar(
-//       SnackBar(
-//         content: Text('An error occurred: $e'),
-//       ),
-//     );
-//   }
-// }
-
 
   @override
   Widget build(BuildContext context) {
@@ -121,7 +92,12 @@ class _RegisState extends State<Regis> {
                       ),
                       // full name
                       TextFormField(
-                        
+                        onChanged: (value) {
+                          setState(() {
+                            _fullName =
+                                value; // Add this line to capture the full name
+                          });
+                        },
                         decoration: InputDecoration(
                           label: const Text('Full Name'),
                           hintText: 'Enter Full Name',
@@ -147,11 +123,11 @@ class _RegisState extends State<Regis> {
                       ),
                       // email
                       TextFormField(
-                        onChanged: (value){
+                        onChanged: (value) {
                           setState(() {
                             _email = value;
                           });
-                        } ,
+                        },
                         decoration: InputDecoration(
                           label: const Text('Email'),
                           hintText: 'Enter Email',
@@ -177,11 +153,11 @@ class _RegisState extends State<Regis> {
                       ),
                       // password
                       TextFormField(
-                        onChanged: (value){
+                        onChanged: (value) {
                           setState(() {
                             _password = value;
                           });
-                        } ,
+                        },
                         obscureText: true,
                         decoration: InputDecoration(
                           label: const Text('Password'),
@@ -241,13 +217,15 @@ class _RegisState extends State<Regis> {
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: () {
-                            if (_formKey.currentState!.validate() && agreePersonalData) {
+                            if (_formKey.currentState!.validate() &&
+                                agreePersonalData) {
                               _handleSignUp();
                               // _register();
                             } else if (!agreePersonalData) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                  content: Text('Please agree to the processing of personal data'),
+                                  content: Text(
+                                      'Please agree to the processing of personal data'),
                                 ),
                               );
                             }
@@ -295,10 +273,8 @@ class _RegisState extends State<Regis> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          Image.asset('assets/fb.png',
-                          width: 30),
-                          Image.asset('assets/google.png',
-                          width:30),
+                          Image.asset('assets/fb.png', width: 30),
+                          Image.asset('assets/google.png', width: 30),
                         ],
                       ),
                       const SizedBox(
